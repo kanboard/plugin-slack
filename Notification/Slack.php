@@ -61,7 +61,7 @@ class Slack extends Base implements NotificationInterface
     public function getMessage(array $project, $event_name, array $event_data)
     {
         if ($this->userSession->isLogged()) {
-            $author = $this->user->getFullname($this->session['user']);
+            $author = $this->helper->user->getFullname();
             $title = $this->notification->getTitleWithAuthor($author, $event_name, $event_data);
         } else {
             $title = $this->notification->getTitleWithoutAuthor($event_name, $event_data);
