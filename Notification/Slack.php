@@ -57,6 +57,7 @@ class Slack extends Base implements NotificationInterface
      * @param  array     $project
      * @param  string    $event_name
      * @param  array     $event_data
+     * @return array
      */
     public function getMessage(array $project, $event_name, array $event_data)
     {
@@ -88,7 +89,7 @@ class Slack extends Base implements NotificationInterface
      * Send message to Slack
      *
      * @access private
-     * @param  srting    $webhook
+     * @param  string    $webhook
      * @param  string    $channel
      * @param  array     $project
      * @param  string    $event_name
