@@ -19,13 +19,13 @@ class Plugin extends Base
         $this->template->hook->attach('template:project:integrations', 'slack:project/integration');
         $this->template->hook->attach('template:user:integrations', 'slack:user/integration');
 
-        $this->userNotificationType->setType('slack', t('Slack'), '\Kanboard\Plugin\Slack\Notification\Slack');
-        $this->projectNotificationType->setType('slack', t('Slack'), '\Kanboard\Plugin\Slack\Notification\Slack');
+        $this->userNotificationTypeModel->setType('slack', t('Slack'), '\Kanboard\Plugin\Slack\Notification\Slack');
+        $this->projectNotificationTypeModel->setType('slack', t('Slack'), '\Kanboard\Plugin\Slack\Notification\Slack');
     }
 
     public function onStartup()
     {
-        Translator::load($this->language->getCurrentLanguage(), __DIR__.'/Locale');
+        Translator::load($this->languageModel->getCurrentLanguage(), __DIR__.'/Locale');
     }
 
     public function getPluginDescription()
@@ -40,7 +40,7 @@ class Plugin extends Base
 
     public function getPluginVersion()
     {
-        return '1.0.3';
+        return '1.0.4';
     }
 
     public function getPluginHomepage()

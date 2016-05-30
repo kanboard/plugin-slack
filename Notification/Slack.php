@@ -3,7 +3,7 @@
 namespace Kanboard\Plugin\Slack\Notification;
 
 use Kanboard\Core\Base;
-use Kanboard\Notification\NotificationInterface;
+use Kanboard\Core\Notification\NotificationInterface;
 
 /**
  * Slack Notification
@@ -23,11 +23,11 @@ class Slack extends Base implements NotificationInterface
      */
     public function notifyUser(array $user, $event_name, array $event_data)
     {
-        $webhook = $this->userMetadata->get($user['id'], 'slack_webhook_url', $this->config->get('slack_webhook_url'));
-        $channel = $this->userMetadata->get($user['id'], 'slack_webhook_channel');
+        $webhook = $this->userMetadataModel->get($user['id'], 'slack_webhook_url', $this->configModel->get('slack_webhook_url'));
+        $channel = $this->userMetadataModel->get($user['id'], 'slack_webhook_channel');
 
         if (! empty($webhook)) {
-            $project = $this->project->getById($event_data['task']['project_id']);
+            $project = $this->projectModel->getById($event_data['task']['project_id']);
             $this->sendMessage($webhook, $channel, $project, $event_name, $event_data);
         }
     }
@@ -42,8 +42,8 @@ class Slack extends Base implements NotificationInterface
      */
     public function notifyProject(array $project, $event_name, array $event_data)
     {
-        $webhook = $this->projectMetadata->get($project['id'], 'slack_webhook_url', $this->config->get('slack_webhook_url'));
-        $channel = $this->projectMetadata->get($project['id'], 'slack_webhook_channel');
+        $webhook = $this->projectMetadataModel->get($project['id'], 'slack_webhook_url', $this->configModel->get('slack_webhook_url'));
+        $channel = $this->projectMetadataModel->get($project['id'], 'slack_webhook_channel');
 
         if (! empty($webhook)) {
             $this->sendMessage($webhook, $channel, $project, $event_name, $event_data);
@@ -63,16 +63,16 @@ class Slack extends Base implements NotificationInterface
     {
         if ($this->userSession->isLogged()) {
             $author = $this->helper->user->getFullname();
-            $title = $this->notification->getTitleWithAuthor($author, $event_name, $event_data);
+            $title = $this->notificationModel->getTitleWithAuthor($author, $event_name, $event_data);
         } else {
-            $title = $this->notification->getTitleWithoutAuthor($event_name, $event_data);
+            $title = $this->notificationModel->getTitleWithoutAuthor($event_name, $event_data);
         }
 
         $message = '*['.$project['name'].']* ';
         $message .= $title;
         $message .= ' ('.$event_data['task']['title'].')';
 
-        if ($this->config->get('application_url') !== '') {
+        if ($this->configModel->get('application_url') !== '') {
             $message .= ' - <';
             $message .= $this->helper->url->to('task', 'show', array('task_id' => $event_data['task']['id'], 'project_id' => $project['id']), '', true);
             $message .= '|'.t('view the task on Kanboard').'>';
