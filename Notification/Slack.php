@@ -74,7 +74,7 @@ class Slack extends Base implements NotificationInterface
 
         if ($this->configModel->get('application_url') !== '') {
             $message .= ' - <';
-            $message .= $this->helper->url->to('task', 'show', array('task_id' => $event_data['task']['id'], 'project_id' => $project['id']), '', true);
+            $message .= $this->helper->url->to('TaskViewController', 'show', array('task_id' => $event_data['task']['id'], 'project_id' => $project['id']), '', true);
             $message .= '|'.t('view the task on Kanboard').'>';
         }
 
