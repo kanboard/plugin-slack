@@ -1,5 +1,5 @@
 <h3><i class="fa fa-slack fa-fw"></i>Slack</h3>
-<div class="listing">
+<div class="panel">
     <?= $this->form->label(t('Webhook URL'), 'slack_webhook_url') ?>
     <?= $this->form->text('slack_webhook_url', $values) ?>
 
