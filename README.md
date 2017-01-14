@@ -14,7 +14,7 @@ Author
 Requirements
 ------------
 
-- Kanboard >= 1.0.29
+- Kanboard >= 1.0.37
 
 Installation
 ------------
