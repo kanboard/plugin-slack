@@ -90,7 +90,7 @@ class Slack extends Base implements NotificationInterface
         return array(
             'text' => $message,
             'username' => 'Kanboard',
-            'icon_url' => 'http://kanboard.net/assets/img/favicon.png',
+            'icon_url' => 'https://raw.githubusercontent.com/kanboard/kanboard/master/assets/img/favicon.png',
         );
     }
 
