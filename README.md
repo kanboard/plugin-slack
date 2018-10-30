@@ -30,7 +30,7 @@ Note: Plugin folder is case-sensitive.
 Configuration
 -------------
 
-Firstly, you have to generate a new webhook url in Slack (**Configured Integrations > Incoming Webhook**).
+Firstly, you have to generate a new webhook url in Slack (**Configured Integrations > Incoming Webhook**) [from here](https://slack.com/apps/A0F7XDUAZ-incoming-webhooks).
 
 You can define only one webhook url (**Settings > Integrations > Slack**) and override the channel for each project and user.
 
