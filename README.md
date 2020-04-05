@@ -1,8 +1,6 @@
 Slack plugin for Kanboard
 =========================
 
-[![Build Status](https://travis-ci.org/kanboard/plugin-slack.svg?branch=master)](https://travis-ci.org/kanboard/plugin-slack)
-
 Receive Kanboard notifications on Slack.
 
 Author
