@@ -83,20 +83,20 @@ class Slack extends Base implements NotificationInterface
 
         $attachment = [];
         if ($this->configModel->get('application_url') !== '') {
-			$attachment_link = $this->helper->url->to('TaskViewController', 'show', array('task_id' => $eventData['task']['id'], 'project_id' => $project['id']), '', true);
-        	$attachment = [
-				[
-					'fallback' => 'View task on ' . $attachment_link ,
-					'actions' => [
-						[
-							'type'=> 'button',
-							'text' => 'View Task',
-							'url' => $attachment_link,
-							'style' => 'primary'
+            $attachment_link = $this->helper->url->to('TaskViewController', 'show', array('task_id' => $eventData['task']['id'], 'project_id' => $project['id']), '', true);
+            $attachment = [
+                [
+                    'fallback' => 'View task on ' . $attachment_link,
+                    'actions' => [
+                        [
+                            'type' => 'button',
+                            'text' => 'View Task',
+                            'url' => $attachment_link,
+                            'style' => 'primary'
 
-						]
-					]
-            	]
+                        ]
+                    ]
+                ]
             ];
         }
 
