@@ -5,6 +5,8 @@ namespace Kanboard\Plugin\Slack\Notification;
 use Kanboard\Core\Base;
 use Kanboard\Core\Notification\NotificationInterface;
 use Kanboard\Model\TaskModel;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * Slack Notification
@@ -14,6 +16,65 @@ use Kanboard\Model\TaskModel;
  */
 class Slack extends Base implements NotificationInterface
 {
+
+    /**
+     * @param $projectId
+     * @return array
+     */
+    private function getProjectEventValues($projectId){
+        $constants = array();
+        try {
+            $reflection = new ReflectionClass(TaskModel::class);
+            $constants = $reflection->getConstants();
+        } catch(ReflectionException $exception){
+            return array();
+        } finally {
+            $events = array();
+        }
+
+        foreach($constants as $key => $value){
+            if(strpos($key, 'EVENT') !== false){
+                $id = str_replace(".", "_", $value);
+
+                $event_value = $this->projectMetadataModel->get($projectId, $id, $this->configModel->get($id));
+                if($event_value == 1) {
+                    array_push($events, $value);
+                }
+            }
+        }
+
+        return $events;
+    }
+
+    /**
+     * @param $userId
+     * @return array
+     */
+    private function getUserEventValues($userId){
+        $constants = array();
+        try {
+            $reflection = new ReflectionClass(TaskModel::class);
+            $constants = $reflection->getConstants();
+        } catch(ReflectionException $exception){
+            return array();
+        } finally {
+            $events = array();
+        }
+
+        foreach($constants as $key => $value){
+            if(strpos($key, 'EVENT') !== false){
+                $id = str_replace(".", "_", $value);
+
+                $event_value = $this->userMetadataModel->get($userId, $id, $this->configModel->get($id));
+                if($event_value == 1) {
+                    array_push($events, $value);
+                }
+            }
+        }
+
+        return $events;
+    }
+
     /**
      * Send notification to a user
      *
@@ -28,15 +89,21 @@ class Slack extends Base implements NotificationInterface
         $channel = $this->userMetadataModel->get($user['id'], 'slack_webhook_channel');
 
         if (! empty($webhook)) {
-            if ($eventName === TaskModel::EVENT_OVERDUE) {
-                foreach ($eventData['tasks'] as $task) {
-                    $project = $this->projectModel->getById($task['project_id']);
-                    $eventData['task'] = $task;
-                    $this->sendMessage($webhook, $channel, $project, $eventName, $eventData);
+            $events = $this->getUserEventValues($user['id']);
+
+            foreach($events as $event) {
+                if($eventName == $event) {
+                    if ($eventName === TaskModel::EVENT_OVERDUE) {
+                        foreach ($eventData['tasks'] as $task) {
+                            $project = $this->projectModel->getById($task['project_id']);
+                            $eventData['task'] = $task;
+                            $this->sendMessage($webhook, $channel, $project, $eventName, $eventData);
+                        }
+                    } else {
+                        $project = $this->projectModel->getById($eventData['task']['project_id']);
+                        $this->sendMessage($webhook, $channel, $project, $eventName, $eventData);
+                    }
                 }
-            } else {
-                $project = $this->projectModel->getById($eventData['task']['project_id']);
-                $this->sendMessage($webhook, $channel, $project, $eventName, $eventData);
             }
         }
     }
@@ -55,7 +122,12 @@ class Slack extends Base implements NotificationInterface
         $channel = $this->projectMetadataModel->get($project['id'], 'slack_webhook_channel');
 
         if (! empty($webhook)) {
-            $this->sendMessage($webhook, $channel, $project, $eventName, $eventData);
+            $events = $this->getProjectEventValues($project['id']);
+            foreach($events as $event) {
+                if ($eventName == $event) {
+                    $this->sendMessage($webhook, $channel, $project, $eventName, $eventData);
+                }
+            }
         }
     }
 
